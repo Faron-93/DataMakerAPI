@@ -93,14 +93,13 @@ def pgsql_creator(dictionary, table_name, num_of_data, lang):
             else:
                 query += str(value) + ","
             query2 = query[:-1] + ""
-        f.write("INSERT INTO" + str(table_name).upper() + "(" + str(columns).upper() + ") VALUES("+ str(query2) + "); \n")
+        f.write("INSERT INTO " + str(table_name).upper() + "(" + str(columns).upper() + ") VALUES("+ str(query2) + "); \n")
     f.close()
     f = open(name, "r")
     response = f.read()
     f.close()
     os.remove(name)
     end = time.time()
-    print(end - start)
     return response
 
 def csv_creator(dictionary, table_name, num_of_data, lang):
@@ -128,7 +127,6 @@ def csv_creator(dictionary, table_name, num_of_data, lang):
     f.close()
     os.remove(name)
     end = time.time()
-    print(end - start)
     return response
 
 
