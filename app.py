@@ -3,6 +3,7 @@ from data_maker import csv_creator, pgsql_creator
 from flask_cors import CORS
 import logging
 from logging.handlers import RotatingFileHandler
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/generate": {"origins": "http://46.41.149.164"}})
@@ -14,11 +15,16 @@ app = Flask(__name__)
 def home():
     return "Random Data Maker in progress"
 
-
 @app.route('/generate', methods=['POST'])
 def generate():
     try:
+        logs = open("logs.txt", "a")
         data = request.get_json()
+        logs.write("otrzymano zapytanie:\n")
+        ct = datetime.datetime.now()
+        logs.write(str(ct)+"\n")
+        logs.write(str(data)+"\n")
+        logs.close()
         data_type = data["data_type"]
         dictionary = data["dictionary"]
         table_name = data["table_name"]
@@ -37,7 +43,7 @@ def generate():
         return jsonify({'error': str(e)}), 500
 
 
-if __name__ == '__app__':
+if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 if not app.debug:
