@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/generate": {"origins": "http://46.41.149.164"}})
+CORS(app)
 
 app = Flask(__name__)
 

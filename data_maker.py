@@ -7,9 +7,12 @@ import os
 import re
 
 languages = {
-        "English": "en_US",
+        "English (GB)": "en_GB",
+        "English (US)": "en_US",
         "Polish": "pl_PL",
-        "Spanish": "es_ES"}
+        "Spanish": "es_ES",
+        "French": "fr_FR",
+        "Italy": "it_IT"}
 
 def cols(dictionary):
     keys = ''
@@ -74,13 +77,10 @@ def column_type(insert, fake):
     return value
 
 def pgsql_creator(dictionary, table_name, num_of_data, lang):
-    languages = {
-        "English": "en_US",
-        "Polish": "pl_PL"
-    }
+    global languages
     start = time.time()
     name = "export/" + table_name + "-" + str(start)[0:9] + ".txt"
-    f = open(name, "w")
+    f = open(name, "w", encoding='utf-8')
     fake = Faker([languages[lang]])
     error = 0
     columns = cols(dictionary)
@@ -95,7 +95,7 @@ def pgsql_creator(dictionary, table_name, num_of_data, lang):
             query2 = query[:-1] + ""
         f.write("INSERT INTO " + str(table_name).upper() + "(" + str(columns).upper() + ") VALUES("+ str(query2) + "); \n")
     f.close()
-    f = open(name, "r")
+    f = open(name, "r", encoding='utf-8')
     response = f.read()
     f.close()
     os.remove(name)
@@ -103,12 +103,10 @@ def pgsql_creator(dictionary, table_name, num_of_data, lang):
     return response
 
 def csv_creator(dictionary, table_name, num_of_data, lang):
-    languages = {
-        "English": "en_US",
-        "Polish": "pl_PL"}
+    global languages
     start = time.time()
-    name = "export/" + table_name + "-" + str(start)[0:9] + ".csv"
-    f = open(name, "w")
+    name = "export/" + table_name + "-" + str(start)[0:9] + ".txt"
+    f = open(name, "w", encoding='utf-8')
     inserts = ''
     fake = Faker([languages[lang]])
     error = 0
@@ -122,7 +120,7 @@ def csv_creator(dictionary, table_name, num_of_data, lang):
             query2 = query[:-1] + "\n"
         f.write(query2)
     f.close()
-    f = open(name, "r")
+    f = open(name, "r", encoding='utf-8')
     response = f.read()
     f.close()
     os.remove(name)
