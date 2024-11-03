@@ -21,6 +21,13 @@ def cols(dictionary):
     keys_2 = keys[:-1]
     return keys_2
 
+def cols_with_quots(dictionary):
+    keys = ''
+    for i in dictionary:
+        keys += i + ","
+    keys_2 = keys[:-1]
+    return keys_2
+
 def long_last_name(fake):
     lastName = fake.last_name().upper() + '-' + fake.last_name().upper()
     return lastName
@@ -76,7 +83,8 @@ def column_type(insert, fake):
         value = random.choice(insert_list)
     return value
 
-def pgsql_creator(dictionary, table_name, num_of_data, lang):
+#Postgresql, MySQL
+def sql_type1_creator(dictionary, table_name, num_of_data, lang):
     global languages
     start = time.time()
     name = "export/" + table_name + "-" + str(start)[0:9] + ".txt"
@@ -93,7 +101,34 @@ def pgsql_creator(dictionary, table_name, num_of_data, lang):
             else:
                 query += str(value) + ","
             query2 = query[:-1] + ""
-        f.write("INSERT INTO " + str(table_name).upper() + "(" + str(columns).upper() + ") VALUES("+ str(query2) + "); \n")
+        f.write("INSERT INTO " + str(table_name) + "(" + str(columns) + ") VALUES("+ str(query2) + "); \n")
+    f.close()
+    f = open(name, "r", encoding='utf-8')
+    response = f.read()
+    f.close()
+    os.remove(name)
+    end = time.time()
+    return response
+
+#OracleSQL
+def sql_type2_creator(dictionary, table_name, num_of_data, lang):
+    global languages
+    start = time.time()
+    name = "export/" + table_name + "-" + str(start)[0:9] + ".txt"
+    f = open(name, "w", encoding='utf-8')
+    fake = Faker([languages[lang]])
+    error = 0
+    columns = cols(dictionary)
+    for num in range(num_of_data):
+        query = ''
+        for i in dictionary:
+            value = column_type(dictionary[i], fake)
+            if type(value) == str:
+                query += "'" + str(value) + "'" + ","
+            else:
+                query += str(value) + ","
+            query2 = query[:-1] + ""
+        f.write("INSERT INTO " + str(table_name) + "(" + str(columns) + ") VALUES("+ str(query2) + "); \n")
     f.close()
     f = open(name, "r", encoding='utf-8')
     response = f.read()
@@ -127,5 +162,14 @@ def csv_creator(dictionary, table_name, num_of_data, lang):
     end = time.time()
     return response
 
-
-
+def json_creator(dictionary, table_name, num_of_data, lang):
+    global languages
+    fake = Faker([languages[lang]])
+    collection = []
+    for num in range(num_of_data):
+        query = {}
+        for i in dictionary:
+            value = column_type(dictionary[i], fake)
+            query[i]=value
+        collection.append(query)
+    return collection

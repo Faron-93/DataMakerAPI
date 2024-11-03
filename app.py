@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from data_maker import csv_creator, pgsql_creator
+from data_maker import csv_creator, sql_type1_creator, json_creator
 from flask_cors import CORS
 import logging
 from logging.handlers import RotatingFileHandler
@@ -7,9 +7,6 @@ import datetime
 
 app = Flask(__name__)
 CORS(app)
-
-app = Flask(__name__)
-
 
 @app.route("/")
 def home():
@@ -30,13 +27,15 @@ def generate():
         table_name = data["table_name"]
         quantity = data["quantity"]
         lang = data["language"]
-        if quantity > 1000:
-            datas = "max 1000 records"
+        if quantity > 5000:
+            datas = "max 5000 records"
         else:
             if data_type == "PostgreSQL":
-                datas = pgsql_creator(dictionary, table_name, quantity, lang)
+                datas = sql_type1_creator(dictionary, table_name, quantity, lang)
             elif data_type == "csv":
                 datas = csv_creator(dictionary, table_name, quantity, lang)
+            elif data_type == "json":
+                datas = json_creator(dictionary, table_name, quantity, lang)
         return datas
 
     except Exception as e:
